@@ -36,7 +36,12 @@ public class Ostacoli {
      *           esplosione a catena, non viene colpito di nuovo.
      */
     public void colpisciAttorno(Rettangolo zona) {
-        // scrivete qui
+        for (Ostacolo o : ostacoli) {
+            // il controllo si fa al turno di ciascuno: un'esplosione a catena può averlo già rotto
+            if (!o.isRotto() && o.getArea().tocca(zona)) {
+                o.colpisci(this);
+            }
+        }
     }
 
     /** Un passo del gioco per tutti gli ostacoli: quelli che si muovono si spostano. */
