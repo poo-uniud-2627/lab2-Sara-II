@@ -5,15 +5,23 @@ package nebbia;
 import geometria.Posizione;
 import geometria.Rettangolo;
 
+
 /**
  * Una zona del campo in cui la palla non si vede: quando ci entra sparisce, quando esce ricompare.
  * Gli ostacoli e le racchette nella nebbia si vedono. La nebbia non cambia mai.
  * Quale nebbia c'è in un livello lo decide il MotoreDeiLivelli.
  */
 public class Nebbia {
-    /** Nessuna nebbia: non nasconde niente. */
+    private final Rettangolo zona;
+
+    private Nebbia(Rettangolo zona){
+
+        this.zona = zona;
+    }
     public static Nebbia nessuna() {
-        throw new UnsupportedOperationException("da scrivere");
+
+        return new Nebbia(null);
+        
     }
 
     /**
@@ -24,17 +32,38 @@ public class Nebbia {
      * o se frazione non è fra 0 (compreso) e 1 (escluso).
      */
     public static Nebbia alCentro(int larghezzaCampo, int altezzaCampo, double frazione) {
-        throw new UnsupportedOperationException("da scrivere");
+        
+        if (larghezzaCampo <= 0 || altezzaCampo <= 0 || frazione < 0 || frazione >= 1) {
+
+            throw new IllegalArgumentException("larghezzaCampo e altezza campo non sono positivi");
+
+        }
+
+        if (frazione == 0) {
+
+            return nessuna();
+        }
+        
+        double larghezzaStriscia = larghezzaCampo * frazione;
+        double x = (larghezzaCampo - larghezzaStriscia) / 2.0;
+
+        Rettangolo zona = new Rettangolo (x, 0, larghezzaStriscia, altezzaCampo);
+
+        return  new Nebbia (zona);
+        
     }
 
     /** Vero se la nebbia c'è. */
     public boolean isPresente() {
-        throw new UnsupportedOperationException("da scrivere");
+        return zona != null;
     }
 
     /** La zona coperta dalla nebbia. Pretende: isPresente(). Lancia IllegalStateException se la nebbia non c'è. */
     public Rettangolo getZona() {
-        throw new UnsupportedOperationException("da scrivere");
+        if (!isPresente()){
+            throw new IllegalStateException("nebbia non presente");
+        }
+        return zona;
     }
 
     /**
@@ -43,6 +72,17 @@ public class Nebbia {
      * Lancia IllegalArgumentException se punto è null.
      */
     public boolean nasconde(Posizione punto) {
-        throw new UnsupportedOperationException("da scrivere");
+        if (punto == null){
+            throw new IllegalArgumentException("Il putno è null");
+
+        }
+        if(!isPresente()){
+            return false;
+        }
+
+        return punto.x() >= zona.x()
+        && punto.x() <= zona.x() + zona.larghezza()
+        && punto.y() >= zona.y()
+        && punto.y() <= zona.y() + zona.altezza();
     }
 }

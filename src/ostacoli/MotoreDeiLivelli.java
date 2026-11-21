@@ -2,6 +2,8 @@
 package ostacoli;
 
 import geometria.Rettangolo;
+import nebbia.Nebbia;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +41,17 @@ public class MotoreDeiLivelli {
         }
         double velocita = VELOCITA_AL_LIVELLO_1 + VELOCITA_IN_PIU_A_OGNI_LIVELLO * (numero - 1);
         double errore = Math.max(0, ERRORE_AL_LIVELLO_1 - ERRORE_IN_MENO_A_OGNI_LIVELLO * (numero - 1));
-        return new Livello(numero, velocita, errore, new Ostacoli(ostacoli(numero, larghezzaCampo / 2.0, altezzaCampo / 2.0)));
+    
+    
+      Nebbia nebbia = switch (numero) {
+            case 1,2 -> Nebbia.nessuna();
+            case 3 -> Nebbia.alCentro(larghezzaCampo, altezzaCampo, 0.30);
+            case 4 -> Nebbia.alCentro(larghezzaCampo, altezzaCampo, 0.35);
+            case 5 -> Nebbia.alCentro(larghezzaCampo, altezzaCampo, 0.40);
+            default -> Nebbia.nessuna();
+            };
+        
+        return new Livello(numero, velocita, errore, new Ostacoli(ostacoli(numero, larghezzaCampo / 2.0, altezzaCampo / 2.0)), nebbia);
     }
 
     /**
